@@ -62,6 +62,14 @@ function compareTitle(a, b) {
 app.get('/movies/read/by-title', function (req, res) {
     res.send({ status: 200, data: movies.sort(compareTitle) });
 })
+
+app.get('/movies/read/id/:id', function (req, res) {
+    if (req.params.id <= movies.length) {
+        res.send({ status: 200, data: movies[req.params.id - 1] });
+    }
+    else { res.status(404).json({ status: 404, error: true, message: `the movie ${req.params.id} does not exist` }); }
+})
+
 app.get('/movies/create', function (req, res) {
 
 })
