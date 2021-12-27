@@ -83,14 +83,14 @@ app.get('/movies/add', function (req, res) {
 })
 
 
-app.get('/movies/create', function (req, res) {
-
-})
-app.get('/movies/update', function (req, res) {
-
-})
-app.get('/movies/delete', function (req, res) {
-
+app.get('/movies/delete/:id', function (req, res) {
+    if (req.params.id <= movies.length) {
+        movies.splice(req.params.id - 1, 1);
+        movies.map(value => {
+            res.send({ status: 200, data: movies });
+        })
+    }
+    else { res.status(404).json({ status: 404, error: true, message: `the movie ${req.params.id} does not exist` }); }
 })
 
 var server = app.listen(3000, function () {
