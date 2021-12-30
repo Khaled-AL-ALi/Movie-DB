@@ -1,5 +1,9 @@
-var express = require('express');
-var app = express();
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 app.get('/', function (req, res) {
     res.send("Ok");
@@ -70,7 +74,7 @@ app.get('/movies/read/id/:id', function (req, res) {
     else { res.status(404).json({ status: 404, error: true, message: `the movie ${req.params.id} does not exist` }); }
 })
 
-app.get('/movies/add', function (req, res) {
+app.post('/movies/add', function (req, res) {
     let title = req.query.title;
     let year = req.query.year;
     let rating = parseInt(req.query.rating) ? req.query.rating : 4;
@@ -83,7 +87,7 @@ app.get('/movies/add', function (req, res) {
 })
 
 
-app.get('/movies/delete/:id', function (req, res) {
+app.delete('/movies/delete/:id', function (req, res) {
     if (req.params.id <= movies.length) {
         movies.splice(req.params.id - 1, 1);
         movies.map(value => {
@@ -92,9 +96,19 @@ app.get('/movies/delete/:id', function (req, res) {
     }
     else { res.status(404).json({ status: 404, error: true, message: `the movie ${req.params.id} does not exist` }); }
 })
+app.put('/movies/update/:id', function (req, res) {
+    let { title, year, rating } = req.query;
+    let id = req.params.id;
+    if (req.params.id <= movies.length) {
+        if (title) { movies[id - 1].title = title; }
+        if (year && !isNaN(year) && year.length == 4) { movies[id - 1].year = year; }
+        if (rating && !isNaN(rating) && rating <= 10 && rating >= 0) { movies[id - 1].rating = rating; }
 
-var server = app.listen(3000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log(host, port);
-});  
+    }
+    else { res.status(404).json({ status: 404, error: true, message: `the movie ${req.params.id} does not exist` }); }
+
+    movies.map(value => {
+        res.send({ status: 200, data: movies });
+    })
+})
+app.listen(3000);
