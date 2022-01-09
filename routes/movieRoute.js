@@ -2,7 +2,7 @@ const express = require('express')
 const Movie = require('../models/movie')
 const router = express.Router()
 const movie = require('../models/movie')
-
+const comin = require('../validation token');
 router.get('/', async (req, res, next) => {
     movie.find({}, (error, result) => {
         if (error) return next(error)
@@ -30,7 +30,7 @@ router.post('/', async (req, res, next) => {
     })
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', comin, async (req, res, next) => {
     let { id } = req.params;
     movie.deleteOne({ _id: id }, (error, result) => {
         if (error) return next(error)
@@ -38,7 +38,7 @@ router.delete('/:id', async (req, res, next) => {
     })
 })
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', comin, async (req, res, next) => {
     const mv = {
         title: req.body.title,
         year: req.body.year,
